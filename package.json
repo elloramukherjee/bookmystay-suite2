@@ -1,0 +1,31 @@
+{
+  "name": "bookmystay-suite2",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BookMyStay Suite — direct booking, AI receptionist and guest CRM for independent Indian hotels",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c green,magenta \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "npm run dev --workspace server",
+    "dev:client": "npm run dev --workspace client",
+    "build": "npm run build --workspace server && npm run build --workspace client",
+    "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace client",
+    "test": "npm run test --workspace server && npm run test --workspace client",
+    "start": "npm run start --workspace server",
+    "preflight": "npm run preflight --workspace server",
+    "seed": "npm run seed --workspace server --",
+    "setup:env": "node scripts/setup-env.mjs",
+    "format": "prettier --write \"server/src/**/*.ts\" \"client/src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"server/src/**/*.ts\" \"client/src/**/*.{ts,tsx}\""
+  },
+  "engines": {
+    "node": ">=20.11"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7",
+    "prettier": "^3.10.1"
+  }
+}

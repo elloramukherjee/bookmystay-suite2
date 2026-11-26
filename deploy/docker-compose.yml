@@ -1,0 +1,53 @@
+# Single VM deployment: API + web app, MongoDB (single-node replica set, so transactions work) and Caddy
+# for automatic HTTPS. Usage (from the repo root):
+#   cp deploy/.env.production.example deploy/.env.production   # fill it in
+#   DOMAIN=stay.example.in docker compose -f deploy/docker-compose.yml up -d --build
+# For MongoDB Atlas instead, remove the "mongo" services and set MONGODB_URI to the Atlas string.
+services:
+  app:
+    build: ..
+    env_file: .env.production
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/bookmystay?replicaSet=rs0
+      TRUST_PROXY: "1"
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:8
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      retries: 10
+    restart: unless-stopped
+    # Not published: only reachable from the app container.
+
+  mongo-init:
+    image: mongo:8
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: "no"
+    command: >
+      mongosh --host mongo --quiet --eval
+      "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'mongo:27017' }] }).ok }"
+
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN, e.g. stay.example.in}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on: [app]
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+  caddy-data:

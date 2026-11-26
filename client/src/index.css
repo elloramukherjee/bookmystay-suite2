@@ -1,0 +1,163 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens — "Modern Indian Boutique Hospitality" (Stitch DESIGN.md).
+ * Forest = primary actions/nav · Terracotta = accents/deals · UPI purple = payments ONLY ·
+ * Emerald = verified/WhatsApp/confirmed · Parchment canvas with white cards.
+ */
+@theme {
+  --font-serif: 'Noto Serif', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-forest: #1d3327;
+  --color-forest-deep: #071e13;
+  --color-forest-soft: #354c3f;
+  --color-forest-50: #eef4f0;
+  --color-forest-100: #dbeddf;
+  --color-forest-200: #b3cdbb;
+
+  --color-terracotta: #c25e38;
+  --color-terracotta-deep: #9d431f;
+  --color-terracotta-50: #fbefe9;
+  --color-terracotta-100: #ffdbcf;
+
+  --color-upi: #5f259f;
+  --color-upi-50: #f3ecfa;
+
+  --color-emerald: #15803d;
+  --color-emerald-50: #e9f6ee;
+
+  --color-parchment: #faf8f4;
+  --color-parchment-alt: #f4f1ea;
+  --color-card: #ffffff;
+  --color-line: #e5e0d8;
+  --color-line-strong: #d8d3ca;
+
+  --color-ink: #101f17;
+  --color-slate: #4a5a50;
+  --color-sage: #718077;
+
+  --color-danger: #ba1a1a;
+  --color-danger-50: #ffdad6;
+  --color-warning: #b45309;
+  --color-warning-50: #fef3c7;
+
+  --shadow-ambient: 0 8px 24px -4px rgba(29, 51, 39, 0.08);
+  --shadow-soft: 0 1px 8px rgba(0, 0, 0, 0.04);
+
+  --radius-card: 0.5rem;
+  --radius-sheet: 1.5rem;
+
+  /* Typography scale (DESIGN.md) */
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 600;
+  --text-display-sm: 32px;
+  --text-display-sm--line-height: 40px;
+  --text-display-sm--letter-spacing: -0.01em;
+  --text-display-sm--font-weight: 600;
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+  --text-headline-lg--font-weight: 600;
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--font-weight: 600;
+  --text-headline-sm: 20px;
+  --text-headline-sm--line-height: 28px;
+  --text-headline-sm--font-weight: 600;
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+  --text-body-md: 15px;
+  --text-body-md--line-height: 22px;
+  --text-body-sm: 13px;
+  --text-body-sm--line-height: 18px;
+  --text-label-lg: 14px;
+  --text-label-lg--line-height: 20px;
+  --text-label-lg--font-weight: 600;
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--font-weight: 600;
+  --text-label-sm: 11px;
+  --text-label-sm--line-height: 14px;
+  --text-label-sm--letter-spacing: 0.04em;
+  --text-label-sm--font-weight: 700;
+
+  --animate-fade-in: fade-in 160ms ease-out;
+  --animate-slide-up: slide-up 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-shimmer: shimmer 1.4s linear infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+}
+
+@layer base {
+  /*
+   * Grid items default to min-width:auto, so a column grows to fit its widest content (a scrollable
+   * tab row, a long table) and pushes the page sideways on phones. Columns should fit the screen and
+   * let that content scroll inside it. Utilities (e.g. min-w-*) still override this.
+   */
+  .grid > * {
+    min-width: 0;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-parchment text-ink font-sans text-body-md antialiased;
+    overscroll-behavior-y: none;
+  }
+  h1, h2, h3, h4 {
+    @apply font-serif text-forest;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 2px;
+  }
+  /* Prices & numbers always in the sans face for even numeral baselines. */
+  .num {
+    @apply font-sans tabular-nums;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-[var(--radius-card)] border border-line bg-card;
+  }
+  .card-elevated {
+    @apply rounded-[var(--radius-card)] border border-line bg-card shadow-ambient;
+  }
+  .eyebrow {
+    @apply text-label-sm uppercase text-sage;
+  }
+  .page-container {
+    @apply mx-auto w-full max-w-[1280px] px-4 lg:px-10;
+  }
+  .skeleton {
+    @apply rounded-md bg-[linear-gradient(90deg,var(--color-parchment-alt)_25%,#ebe6dd_50%,var(--color-parchment-alt)_75%)] bg-[length:200%_100%] animate-shimmer;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

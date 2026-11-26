@@ -1,0 +1,103 @@
+import type { HotelSettings, MeResponse, Permission, StaffRole } from '../types/api';
+
+const FRONT_DESK: Permission[] = [
+  'hotel.read',
+  'rooms.read',
+  'bookings.read',
+  'stays.manage',
+  'guests.read',
+  'guests.write',
+  'conversations.read',
+  'conversations.reply',
+];
+const OWNER: Permission[] = [
+  ...FRONT_DESK,
+  'staff.read',
+  'staff.manage',
+  'rooms.manage',
+  'rates.manage',
+  'availability.manage',
+  'bookings.manage',
+  'guests.read_all',
+  'conversations.escalations',
+  'hotel.update',
+  'integrations.manage',
+  'policies.manage',
+  'finance.read',
+  'campaigns.manage',
+  'audit.read',
+];
+
+export function meFixture(role: Extract<StaffRole, 'owner' | 'front_desk'>): MeResponse {
+  return {
+    user: {
+      id: 'u1',
+      hotelId: 'h1',
+      name: role === 'owner' ? 'Vikramaditya Singh' : 'Mohan Lal',
+      email: `${role}@test.example`,
+      phone: null,
+      role,
+      isActive: true,
+      lastLoginAt: null,
+      createdAt: null,
+    },
+    permissions: role === 'owner' ? OWNER : FRONT_DESK,
+    hotel: {
+      id: 'h1',
+      name: 'Test Haveli',
+      slug: 'test-haveli',
+      city: 'Jaipur',
+      totalRooms: 24,
+      whatsapp: '+919876543210',
+      modules: { booking: true, receptionist: true, crm: true },
+    },
+  };
+}
+
+export const settingsFixture: HotelSettings = {
+  id: 'h1',
+  name: 'Test Haveli',
+  slug: 'test-haveli',
+  tagline: 'A test stay',
+  story: '',
+  starRating: 4,
+  verified: true,
+  address: { line1: '', line2: '', locality: '', city: 'Jaipur', state: 'Rajasthan', pincode: '302002', geo: { lat: null, lng: null } },
+  contact: { phone: null, whatsapp: '+919876543210', email: null },
+  totalRooms: 24,
+  checkInTime: '13:00',
+  checkOutTime: '11:00',
+  photos: [],
+  amenities: [],
+  highlights: [],
+  reviews: [],
+  rating: { average: null, count: 0 },
+  modules: { booking: true, receptionist: true, crm: true },
+  policies: { directDiscountPercent: 10, freeCancellationHours: 48 },
+  paymentMode: 'online',
+  gstin: null,
+  timezone: 'Asia/Kolkata',
+  currency: 'INR',
+  status: 'active',
+  settings: {
+    directDiscountPercent: 10,
+    otaCommissionRate: 18,
+    holdMinutes: 15,
+    freeCancellationHours: 48,
+    taxSlabs: [
+      { upToPaise: 100000, ratePercent: 0 },
+      { upToPaise: 750000, ratePercent: 5 },
+      { upToPaise: null, ratePercent: 18 },
+    ],
+    promoCodes: [],
+  },
+  integrations: {
+    paymentProvider: 'mock',
+    smsProvider: 'console',
+    whatsappPhoneNumberId: null,
+    geminiConfigured: false,
+    whatsappConfigured: false,
+    paymentMode: 'development-mock',
+    smsMode: 'development-console',
+  },
+};
